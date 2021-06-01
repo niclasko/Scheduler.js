@@ -271,6 +271,15 @@ function Scheduler(_container) {
         //e.target.appendChild(createInterval(resourceMatrixEntry));
         containerElement.appendChild(createInterval(resourceMatrixEntry));
     };
+    
+    var renderIntervals = function() {
+        for(var i=0; i<resources.length; i++) {
+            var intervals = resources[i].getIntervals();
+            for(var j=0; j<intervals.length; j++) {
+                containerElement.appendChild(intervals[j].getElement());
+            }
+        }
+    };
 
     var createResourceMatrix = function() {
         for(var i=0; i<resources.length; i++) {
@@ -301,6 +310,8 @@ function Scheduler(_container) {
 
         endTag();
         setTimeCellWidth();
+        
+        renderIntervals();
     };
 
     this.getIntervals = function() {
@@ -358,6 +369,9 @@ function Scheduler(_container) {
         this.createResourceMatrixEntry = function(timeSlotIndex, startTime) {
             resourceMatrixEntries[timeSlotIndex] = new ResourceMatrixEntry(
                 resourceIndex, timeSlotIndex, startTime, self, scheduler);
+        };
+        this.getIntervals = function() {
+            return resourceIntervals;  
         };
         this.addInterval = function(interval) {
             resourceIntervals.push(interval);
@@ -480,7 +494,7 @@ function Scheduler(_container) {
         var initialize = function() {
             offsetLeft = resourceMatrixEntry.element().offsetLeft-1;
             left = 0;
-            offsetTop = resourceMatrixEntry.element().offsetTop;
+            offsetTop = resourceMatrixEntry.element().offsetParent.offsetTop + resourceMatrixEntry.element().offsetTop;
             width = (scheduler.getTimeCellWidth()*2);
             element = document.createElement("div");
             element.style.width = width+"px";
